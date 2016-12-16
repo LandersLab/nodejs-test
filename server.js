@@ -25,36 +25,25 @@ app.get('/ajax', function(req, res) {
     res.sendFile( __dirname + "/public/html/" + "ajax.html" );
 });
 
-var db = require("./db");
 
-app.get('*', function(req, res) {
-    res.status(404).sendFile( __dirname + "/public/html/" + "404.html" );
-    var problemURL = req.params[0].substring(1);
-    db.add(problemURL);
+app.get("/public/css/:filename", function(req, res) {
+    res.sendFile( __dirname + '/public/css/' + req.params.filename);
 });
 
 
-/* 
-* Ping pong the request, send in order of array at end "[cb0, cb1, cb2]", independent of actual order of appearance in file.
-* For Later
-var cb1 = function (req, res, next) {
-  console.log('CB1')
-  next()
-}
+var error = require("./public/db/error");
 
-var cb0 = function (req, res, next) {
-  console.log('CB0')
-  next()
-}
-
-var cb2 = function (req, res) {
-  res.send('Hello from C!')
-}
-
-app.get('/example/c', [cb0, cb1, cb2])
-*/
-
-
+app.get('*', function(req, res) {
+    res.status(404).sendFile( __dirname + "/public/html/" + "404.html" );
+    console.log(req.params);
+    var problemURL = req.params[0].substring(1);
+    if (problemURL == '404') {
+        console.log('lost');
+    } else {
+        console.log(problemURL);
+        error.log(problemURL);
+    }
+});
 
 var server = app.listen(process.env.PORT, function () {
 
